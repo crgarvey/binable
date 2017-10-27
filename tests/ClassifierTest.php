@@ -79,4 +79,10 @@ class ClassifierTest extends TestCase
 
 		$this->classifier->shouldHaveEqualFrequency()->classify($values);
 	}
+
+	public function testClassifierThrowsExceptionInvalidValue(): void
+	{
+		$this->expectException(InvalidArgumentException::class);
+		$this->classifier->shouldHaveEqualFrequency()->classify([1, 'a', 'b']);
+	}
 }
