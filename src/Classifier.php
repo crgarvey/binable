@@ -29,6 +29,7 @@ class Classifier
 	public function shouldHaveEqualWidth(bool $equal = true): Classifier
 	{
 		$this->equalWidth = $equal;
+		$this->equalFrequency = $equal === true ? false : $this->equalFrequency;
 
 		return $this;
 	}
@@ -41,6 +42,7 @@ class Classifier
 	public function shouldHaveEqualFrequency(bool $equal = true): Classifier
 	{
 		$this->equalFrequency = $equal;
+		$this->equalWidth = $equal === true ? false : $this->equalWidth;
 
 		return $this;
 	}
@@ -66,11 +68,8 @@ class Classifier
 			throw new InputValidationException;
 		}
 
-		// Calculate the ranges.
-		$ranges = $this->getRanges($values);
-
-		// Group the value into each range, then normalize.
-		$values = $this->groupIntoRange($values, $ranges);
+		$value = asort($values);
+		$values = ($this->equalWidth === true ? $this->groupIntoRange($values, $this->getEqualRanges($values)) : $this->getEqualValues($values));
 
 		return $this->normalize($values);
 	}
@@ -148,11 +147,13 @@ class Classifier
 		return $previous;
 	}
 	/**
-	 * Get the equal width divisible by the group size.
+	 * Get the equal width divisible by the size.
+	 *
+	 * @param int $highestValue
 	 *
 	 * @return int
 	 */
-	protected function getEqualWidth($highestValue): int
+	protected function getHighestValueForWidth($highestValue): int
 	{
 		$highestValue = ceil($highestValue);
 
@@ -208,7 +209,7 @@ class Classifier
 	 *
 	 * @return array
 	 */
-	protected function getRanges(array $values): array
+	protected function getEqualRanges(array $values): array
 	{
 		// Determine the highest value.
 		$highestValue = $this->determineHighestValue($values);
@@ -216,7 +217,7 @@ class Classifier
 
 		// When grouping width should be equal, determine the width.
 		if ($this->equalWidth === true) {
-			$highestValue = $this->getEqualWidth($highestValue);
+			$highestValue = $this->getHighestValueForWidth($highestValue);
 		}
 
 		$width = $highestValue / $this->getGroupSize();
@@ -224,6 +225,18 @@ class Classifier
 		$ranges = range($lowestValue, $highestValue, $width);
 
 		return $ranges;
+	}
+
+	/**
+	 * Get the values organized into buckets equally.
+	 *
+	 * @param array $values
+	 *
+	 * @return array
+	 */
+	protected function getEqualValues(array $values): array
+	{
+		return array_chunk($values, sizeof($values) / $this->getGroupSize());
 	}
 
 	/**

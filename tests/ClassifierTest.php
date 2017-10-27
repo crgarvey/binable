@@ -19,8 +19,54 @@ class ClassifierTest extends TestCase
 		$this->classifier = new Classifier;
 	}
 
-	public function testClassifierCanGroupWithoutFilters(): void
+	public function testClassifierCanGroupWithEqualFrequency(): void
 	{
+		$expected = [
+			'Low'	=> [
+				0.1,
+				2.5,
+				2.8,
+				3.4
+			],
+			'Medium' => [
+				3.5,
+				3.6,
+				3.9,
+				4.4
+			],
+			'High'	=> [
+				4.5,
+				6,
+				7,
+				9
+			]
+		];
+		$this->assertEquals($this->classifier->shouldHaveEqualFrequency()->classify($this->input), $expected);
+	}
 
+	public function testClassifierCanGroupEqualWidth(): void
+	{
+		$expected = [
+			'Low'	=> [
+				0.1,
+				2.5,
+				2.8
+			],
+			'Medium' => [
+				3.4,
+				3.5,
+				3.6,
+				3.9,
+				4.4,
+				4.5,
+				6,
+			],
+			'High'	=> [
+				7,
+				9
+			]
+		];
+
+		$this->assertEquals($this->classifier->shouldHaveEqualWidth()->classify($this->input), $expected);
 	}
 }
