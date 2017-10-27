@@ -4,6 +4,7 @@ namespace Binable\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Binable\Classifier;
+use InvalidArgumentException;
 
 class ClassifierTest extends TestCase
 {
@@ -68,5 +69,14 @@ class ClassifierTest extends TestCase
 		];
 
 		$this->assertEquals($this->classifier->shouldHaveEqualWidth()->classify($this->input), $expected);
+	}
+
+	public function testClassifierThrowsExceptionEqualFrequency(): void
+	{
+		$this->expectException(InvalidArgumentException::class);
+		$values = $this->input;
+		array_splice($values, 1);
+
+		$this->classifier->shouldHaveEqualFrequency()->classify($values);
 	}
 }

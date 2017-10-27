@@ -2,7 +2,7 @@
 
 namespace Binable;
 
-use InputValidationException;
+use InvalidArgumentException;
 
 class Classifier
 {
@@ -59,13 +59,13 @@ class Classifier
 		// Validate the input.
 		foreach ($values as $value) {
 			if (! $this->isValidValue($value)) {
-				throw new InputValidationException;
+				throw new InvalidArgumentException;
 			}
 		}
 
 		// Determine if the input can be equally distributed across the bins.
 		if ($this->equalFrequency === true && ! $this->canEquallyDistribute($values)) {
-			throw new InputValidationException;
+			throw new InvalidArgumentException;
 		}
 
 		$value = asort($values);
