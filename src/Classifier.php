@@ -68,7 +68,7 @@ class Classifier
 			throw new InvalidArgumentException;
 		}
 
-		$value = asort($values);
+		asort($values);
 		$values = ($this->equalWidth === true ? $this->groupIntoRange($values, $this->getEqualRanges($values)) : $this->getEqualValues($values));
 
 		return $this->normalize($values);
