@@ -42,7 +42,29 @@ class ClassifierTest extends TestCase
 				9
 			]
 		];
+
 		$this->assertEquals($this->classifier->shouldHaveEqualFrequency()->classify($this->input), $expected);
+
+
+	    $expected = [
+			'Low'	=> [
+				-1,
+				2,
+				3,
+			],
+			'Medium' => [
+				4,
+				5,
+				6,
+			],
+			'High'	=> [
+				9,
+				10,
+				1000
+			]
+		];
+
+		$this->assertEquals($this->classifier->shouldHaveEqualFrequency()->classify([-1,2,3,4,5,6,9,10,1000]), $expected);
 	}
 
 	public function testClassifierCanGroupEqualWidth(): void
@@ -68,6 +90,31 @@ class ClassifierTest extends TestCase
 			]
 		];
 
+		$this->assertEquals($this->classifier->shouldHaveEqualWidth()->classify($this->input), $expected);
+
+		$expected = [
+			'Low'	=> [
+				0.1,
+				2.5,
+				2.8,
+				3.4,
+				3.5,
+				3.6,
+				3.9,
+				4.4,
+				4.5,
+				6,
+				7,
+				9
+			],
+			'Medium' => [
+			],
+			'High'	=> [
+				1000
+			]
+		];
+
+		array_push($this->input, 1000);
 		$this->assertEquals($this->classifier->shouldHaveEqualWidth()->classify($this->input), $expected);
 	}
 

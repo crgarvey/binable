@@ -246,7 +246,17 @@ class Classifier
 	 */
 	protected function normalize($values): array
 	{
-		return array_combine(self::GROUPS, $values);
+		$result = [];
+
+		foreach (self::GROUPS as $group) {
+			$result[$group] = [];
+		}
+
+		foreach ($values as $key => $value) {
+			$result[self::GROUPS[$key]] = $value;
+		}
+
+		return $result;
 	}
 }
 
