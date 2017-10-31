@@ -246,17 +246,22 @@ class Classifier
 	 */
 	protected function normalize($values): array
 	{
-		$result = [];
+		$shouldSort = false;
 
-		foreach (self::GROUPS as $group) {
-			$result[$group] = [];
+		for ($index = 0; $index < sizeof(self::GROUPS); $index++) {
+			if (! empty($values[$index])) {
+				continue;
+			}
+
+			$shouldSort = true;
+			$values[$index] = [];
 		}
 
-		foreach ($values as $key => $value) {
-			$result[self::GROUPS[$key]] = $value;
+		if ($shouldSort === true) {
+			ksort($values);
 		}
 
-		return $result;
+		return array_combine(self::GROUPS, $values);
 	}
 }
 
